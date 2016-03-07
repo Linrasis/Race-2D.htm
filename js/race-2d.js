@@ -136,14 +136,14 @@ function logic(){
     }
 
     if(racers[0]['angle'] > angle){
-      racers[0]['angle'] -= .02;
+      racers[0]['angle'] -= racers[0]['turn'];
 
     }else if(racers[0]['angle'] < angle){
-      racers[0]['angle'] += .02;
+      racers[0]['angle'] += racers[0]['turn'];
     }
 
-    racers[0]['x'] += Math.cos(racers[0]['angle']);
-    racers[0]['y'] += Math.sin(racers[0]['angle']);
+    racers[0]['x'] += Math.cos(racers[0]['angle']) * racers[0]['speed'];
+    racers[0]['y'] += Math.sin(racers[0]['angle']) * racers[0]['speed'];
 }
 
 function play_audio(id){
@@ -293,7 +293,9 @@ function setmode(newmode, newgame){
         racers = [
           {
             'angle': 0,
+            'speed': 2,
             'target': 0,
+            'turn': .04,
             'x': 0,
             'y': -150,
           },
