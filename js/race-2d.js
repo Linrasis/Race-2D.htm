@@ -115,35 +115,37 @@ function draw(){
 }
 
 function logic(){
-    if(distance(
-      racers[0]['x'],
-      racers[0]['y'],
-      checkpoints[racers[0]['target']]['x'],
-      checkpoints[racers[0]['target']]['y']
-    ) < 50){
-        racers[0]['target'] = checkpoints[racers[0]['target']]['next'];
+    for(var racer in racers){
+        if(distance(
+          racers[racer]['x'],
+          racers[racer]['y'],
+          checkpoints[racers[racer]['target']]['x'],
+          checkpoints[racers[racer]['target']]['y']
+        ) < 50){
+            racers[racer]['target'] = checkpoints[racers[racer]['target']]['next'];
+        }
+
+        var angle = Math.atan2(
+          checkpoints[racers[racer]['target']]['y'] - racers[racer]['y'],
+          checkpoints[racers[racer]['target']]['x'] - racers[racer]['x']
+        );
+        if(angle < 0){
+            angle += Math.PI * 2;
+
+        }else if(angle > Math.PI * 2){
+            angle -= Math.PI * 2;
+        }
+
+        if(racers[racer]['angle'] > angle){
+          racers[racer]['angle'] -= racers[racer]['turn'];
+
+        }else if(racers[racer]['angle'] < angle){
+          racers[racer]['angle'] += racers[racer]['turn'];
+        }
+
+        racers[racer]['x'] += Math.cos(racers[racer]['angle']) * racers[racer]['speed'];
+        racers[racer]['y'] += Math.sin(racers[racer]['angle']) * racers[racer]['speed'];
     }
-
-    var angle = Math.atan2(
-      checkpoints[racers[0]['target']]['y'] - racers[0]['y'],
-      checkpoints[racers[0]['target']]['x'] - racers[0]['x']
-    );
-    if(angle < 0){
-        angle += Math.PI * 2;
-
-    }else if(angle > Math.PI * 2){
-        angle -= Math.PI * 2;
-    }
-
-    if(racers[0]['angle'] > angle){
-      racers[0]['angle'] -= racers[0]['turn'];
-
-    }else if(racers[0]['angle'] < angle){
-      racers[0]['angle'] += racers[0]['turn'];
-    }
-
-    racers[0]['x'] += Math.cos(racers[0]['angle']) * racers[0]['speed'];
-    racers[0]['y'] += Math.sin(racers[0]['angle']) * racers[0]['speed'];
 }
 
 function play_audio(id){
