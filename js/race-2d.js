@@ -99,6 +99,14 @@ function draw(){
 
     buffer.restore();
 
+    // Draw lap counter.
+    buffer.fillStyle = '#fff';
+    buffer.fillText(
+      racers[0]['lap'],
+      0,
+      25
+    );
+
     canvas.clearRect(
       0,
       0,
@@ -122,6 +130,9 @@ function logic(){
           checkpoints[racers[racer]['target']]['x'],
           checkpoints[racers[racer]['target']]['y']
         ) < 50){
+            if(checkpoints[racers[racer]['target']]['lap']){
+                racers[racer]['lap'] += 1;
+            }
             racers[racer]['target'] = checkpoints[racers[racer]['target']]['next'];
         }
 
@@ -188,6 +199,8 @@ function resize(){
     document.getElementById('buffer').width = width;
     document.getElementById('canvas').width = width;
     x = width / 2;
+
+    buffer.font = '23pt sans-serif';
 }
 
 // Save settings into window.localStorage if they differ from default.
@@ -287,8 +300,14 @@ function setmode(newmode, newgame){
             'y': 175,
           },
           {
-            'next': 0,
+            'next': 5,
             'x': -250,
+            'y': -150,
+          },
+          {
+            'lap': true,
+            'next': 0,
+            'x': 0,
             'y': -150,
           },
         ];
@@ -296,6 +315,7 @@ function setmode(newmode, newgame){
           {
             'angle': 0,
             'color': settings['color'],
+            'lap': 0,
             'speed': 2,
             'target': 0,
             'turn': .04,
