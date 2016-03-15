@@ -64,9 +64,8 @@ function draw(){
     }
 
     // Draw racers.
-    buffer.fillStyle = settings['color'];
-    buffer.strokeStyle = settings['color'];
     for(var racer in racers){
+        buffer.fillStyle = racers[racer]['color'];
         buffer.save();
         buffer.translate(
           racers[racer]['x'],
@@ -83,6 +82,7 @@ function draw(){
 
         buffer.restore();
 /*
+        buffer.strokeStyle = racers[racer]['color'];
         buffer.beginPath();
           buffer.moveTo(
             racers[racer]['x'],
@@ -295,6 +295,7 @@ function setmode(newmode, newgame){
         racers = [
           {
             'angle': 0,
+            'color': settings['color'],
             'speed': 2,
             'target': 0,
             'turn': .04,
