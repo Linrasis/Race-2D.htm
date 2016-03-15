@@ -283,8 +283,8 @@ function setmode(newmode, newgame){
           },
           {
             'next': 4,
-            'x': -250,
-            'y': 150,
+            'x': -225,
+            'y': 175,
           },
           {
             'next': 0,
