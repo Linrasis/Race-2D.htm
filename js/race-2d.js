@@ -374,7 +374,7 @@ var settings = {
     ? parseFloat(window.localStorage.getItem('Race-2D.htm-audio-volume'))
     : 1,
   'color': window.localStorage.getItem('Race-2D.htm-color') || '#009900',
-  'ms-per-frame': parseInt(window.localStorage.getItem('Race-2D.htm-ms-per-frame')) || 25,
+  'ms-per-frame': parseInt(window.localStorage.getItem('Race-2D.htm-ms-per-frame'), 10) || 25,
 };
 var walls = [];
 var width = 0;
