@@ -4,14 +4,7 @@ function distance(x0, y0, x1, y1){
     return Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
 }
 
-function draw(){
-    buffer.clearRect(
-      0,
-      0,
-      width,
-      height
-    );
-
+function draw_logic(){
     buffer.save();
     buffer.translate(
       x,
@@ -106,20 +99,6 @@ function draw(){
       0,
       25
     );
-
-    canvas.clearRect(
-      0,
-      0,
-      width,
-      height
-    );
-    canvas.drawImage(
-      document.getElementById('buffer'),
-      0,
-      0
-    );
-
-    animationFrame = window.requestAnimationFrame(draw);
 }
 
 function logic(){
@@ -176,21 +155,7 @@ function reset(){
     save();
 }
 
-function resize(){
-    if(mode <= 0){
-        return;
-    }
-
-    height = window.innerHeight;
-    document.getElementById('buffer').height = height;
-    document.getElementById('canvas').height = height;
-    y = height / 2;
-
-    width = window.innerWidth;
-    document.getElementById('buffer').width = width;
-    document.getElementById('canvas').width = width;
-    x = width / 2;
-
+function resize_logic(){
     buffer.font = '23pt sans-serif';
 }
 
@@ -233,40 +198,21 @@ function save(){
     }
 }
 
-function setmode(newmode, newgame){
-    window.cancelAnimationFrame(animationFrame);
-    window.clearInterval(interval);
-
+function setmode_logic(newgame){
     checkpoints = {};
     racers = {};
 
-    mode = newmode;
+    // Main menu mode.
+    if(mode === 0){
+        document.body.innerHTML = '<div><div><a onclick="setmode(1, true)">Test Track</a></div></div><div class=right><div><input disabled value=ESC>Main Menu</div><hr><div><input id=audio-volume max=1 min=0 step=0.01 type=range value='
+          + settings['audio-volume'] + '>Audio<br><input id=color type=color value='
+          + settings['color'] + '>Color<br><input id=ms-per-frame value='
+          + settings['ms-per-frame'] + '>ms/Frame<br><a onclick=reset()>Reset Settings</a></div></div>';
 
     // New game mode.
-    if(mode > 0){
-        // If it's a newgame from the main menu, save settings.
+    }else{
         if(newgame){
             save();
-        }
-
-        // If it's a newgame from the main menu, setup canvas and buffers.
-        if(newgame){
-            document.body.innerHTML =
-              '<canvas id=canvas></canvas><canvas id=buffer></canvas>';
-
-            var contextAttributes = {
-              'alpha': false,
-            };
-            buffer = document.getElementById('buffer').getContext(
-              '2d',
-              contextAttributes
-            );
-            canvas = document.getElementById('canvas').getContext(
-              '2d',
-              contextAttributes
-            );
-
-            resize();
         }
 
         checkpoints = [
@@ -340,34 +286,11 @@ function setmode(newmode, newgame){
             'y': -125,
           },
         ];
-
-        animationFrame = window.requestAnimationFrame(draw);
-        interval = window.setInterval(
-          logic,
-          settings['ms-per-frame']
-        );
-
-        return;
     }
-
-    // Main menu mode.
-    buffer = 0;
-    canvas = 0;
-
-    document.body.innerHTML = '<div><div><a onclick="setmode(1, true)">Test Track</a></div></div><div class=right><div><input disabled value=ESC>Main Menu</div><hr><div><input id=audio-volume max=1 min=0 step=0.01 type=range value='
-      + settings['audio-volume'] + '>Audio<br><input id=color type=color value='
-      + settings['color'] + '>Color<br><input id=ms-per-frame value='
-      + settings['ms-per-frame'] + '>ms/Frame<br><a onclick=reset()>Reset Settings</a></div></div>';
 }
 
-var animationFrame = 0;
-var buffer = 0;
-var canvas = 0;
 var checkpoints = {};
 var degree = Math.PI / 180;
-var height = 0;
-var interval = 0;
-var mode = 0;
 var racers = {};
 var settings = {
   'audio-volume': window.localStorage.getItem('Race-2D.htm-audio-volume') !== null
@@ -377,9 +300,6 @@ var settings = {
   'ms-per-frame': parseInt(window.localStorage.getItem('Race-2D.htm-ms-per-frame'), 10) || 25,
 };
 var walls = [];
-var width = 0;
-var x = 0;
-var y = 0;
 
 window.onkeydown = function(e){
     if(mode <= 0){
@@ -398,11 +318,4 @@ window.onkeydown = function(e){
     }
 };
 
-window.onload = function(e){
-    setmode(
-      0,
-      true
-    );
-};
-
-window.onresize = resize;
+window.onload = init_canvas;
