@@ -138,64 +138,8 @@ function logic(){
     }
 }
 
-function reset(){
-    if(!window.confirm('Reset settings?')){
-        return;
-    }
-
-    var ids = {
-      'audio-volume': 1,
-      'color': '#009900',
-      'ms-per-frame': 25,
-    };
-    for(var id in ids){
-        document.getElementById(id).value = ids[id];
-    }
-
-    save();
-}
-
 function resize_logic(){
     buffer.font = '23pt sans-serif';
-}
-
-// Save settings into window.localStorage if they differ from default.
-function save(){
-    var ids = {
-      'audio-volume': 1,
-      'ms-per-frame': 25,
-    };
-    for(var id in ids){
-        settings[id] = parseFloat(document.getElementById(id).value);
-
-        if(settings[id] == ids[id]
-          || isNaN(settings[id])){
-            window.localStorage.removeItem('Race-2D.htm-' + id);
-
-        }else{
-            window.localStorage.setItem(
-              'Race-2D.htm-' + id,
-              settings[id]
-            );
-        }
-    }
-
-    ids = {
-      'color': '#009900',
-    };
-    for(id in ids){
-        settings[id] = document.getElementById(id).value;
-
-        if(settings[id] === ids[id]){
-            window.localStorage.removeItem('Race-2D.htm-' + id);
-
-        }else{
-            window.localStorage.setItem(
-              'Race-2D.htm-' + id,
-              settings[id]
-            );
-        }
-    }
 }
 
 function setmode_logic(newgame){
@@ -293,11 +237,6 @@ var checkpoints = {};
 var degree = Math.PI / 180;
 var racers = {};
 var settings = {
-  'audio-volume': window.localStorage.getItem('Race-2D.htm-audio-volume') !== null
-    ? parseFloat(window.localStorage.getItem('Race-2D.htm-audio-volume'))
-    : 1,
-  'color': window.localStorage.getItem('Race-2D.htm-color') || '#009900',
-  'ms-per-frame': parseInt(window.localStorage.getItem('Race-2D.htm-ms-per-frame'), 10) || 25,
 };
 var walls = [];
 
@@ -318,4 +257,14 @@ window.onkeydown = function(e){
     }
 };
 
-window.onload = init_canvas;
+window.onload = function(){
+    init_settings(
+      'Race-2D.htm-',
+      {
+        'audio-volume': 1,
+        'color': '#009900',
+        'ms-per-frame': 25,
+      }
+    );
+    init_canvas();
+};
