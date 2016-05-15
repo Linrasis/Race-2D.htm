@@ -148,10 +148,13 @@ function setmode_logic(newgame){
 
     // Main menu mode.
     if(mode === 0){
-        document.body.innerHTML = '<div><div><a onclick="setmode(1, true)">Test Track</a></div></div><div class=right><div><input disabled value=ESC>Main Menu</div><hr><div><input id=audio-volume max=1 min=0 step=0.01 type=range value='
-          + settings['audio-volume'] + '>Audio<br><input id=color type=color value='
-          + settings['color'] + '>Color<br><input id=ms-per-frame value='
-          + settings['ms-per-frame'] + '>ms/Frame<br><a onclick=reset()>Reset Settings</a></div></div>';
+        document.body.innerHTML = '<div><div><a onclick="setmode(1, true)">Test Track</a></div></div>'
+          + '<div class=right><div><input disabled value=ESC>Main Menu</div><hr>'
+          + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
+          + '<input id=color type=color>Color<br>'
+          + '<input id=ms-per-frame>ms/Frame<br>'
+          + '<a onclick=reset()>Reset Settings</a></div></div>';
+        update_settings();
 
     // New game mode.
     }else{
