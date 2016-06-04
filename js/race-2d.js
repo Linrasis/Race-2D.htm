@@ -239,8 +239,6 @@ function setmode_logic(newgame){
 var checkpoints = {};
 var degree = Math.PI / 180;
 var racers = {};
-var settings = {
-};
 var walls = [];
 
 window.onkeydown = function(e){
