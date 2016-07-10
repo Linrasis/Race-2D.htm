@@ -149,13 +149,13 @@ function setmode_logic(newgame){
           + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
           + '<input id=color type=color>Color<br>'
           + '<input id=ms-per-frame>ms/Frame<br>'
-          + '<a onclick=reset()>Reset Settings</a></div></div>';
-        update_settings();
+          + '<a onclick=settings_reset()>Reset Settings</a></div></div>';
+        settings_update();
 
     // New game mode.
     }else{
         if(newgame){
-            save();
+            settings_save();
         }
 
         checkpoints = [
@@ -194,7 +194,7 @@ function setmode_logic(newgame){
         racers = [
           {
             'angle': 0,
-            'color': settings['color'],
+            'color': settings_settings['color'],
             'lap': 0,
             'speed': 2,
             'target': 0,
@@ -255,7 +255,7 @@ window.onkeydown = function(e){
 };
 
 window.onload = function(){
-    init_settings(
+    settings_init(
       'Race-2D.htm-',
       {
         'audio-volume': 1,
