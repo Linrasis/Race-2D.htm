@@ -5,15 +5,15 @@ function distance(x0, y0, x1, y1){
 }
 
 function draw_logic(){
-    buffer.save();
-    buffer.translate(
-      x,
-      y
+    canvas_buffer.save();
+    canvas_buffer.translate(
+      canvas_x,
+      canvas_y
     );
 
     // Draw background.
-    buffer.fillStyle = '#333';
-    buffer.fillRect(
+    canvas_buffer.fillStyle = '#333';
+    canvas_buffer.fillRect(
       -300,
       -200,
       600,
@@ -22,33 +22,33 @@ function draw_logic(){
 
 /*
     // Draw checkpoints.
-    buffer.fillStyle = '#fff';
-    buffer.strokeStyle = '#999';
+    canvas_buffer.fillStyle = '#fff';
+    canvas_buffer.strokeStyle = '#999';
     for(var checkpoint in checkpoints){
-        buffer.fillRect(
+        canvas_buffer.fillRect(
           checkpoints[checkpoint]['x'] - 5,
           checkpoints[checkpoint]['y'] - 5,
           10,
           10
         );
-        buffer.beginPath();
-          buffer.moveTo(
+        canvas_buffer.beginPath();
+          canvas_buffer.moveTo(
             checkpoints[checkpoint]['x'],
             checkpoints[checkpoint]['y']
           );
-          buffer.lineTo(
+          canvas_buffer.lineTo(
             checkpoints[checkpoints[checkpoint]['next']]['x'],
             checkpoints[checkpoints[checkpoint]['next']]['y']
           );
-        buffer.closePath();
-        buffer.stroke();
+        canvas_buffer.closePath();
+        canvas_buffer.stroke();
     }
 */
 
     // Draw walls.
-    buffer.fillStyle = '#555';
+    canvas_buffer.fillStyle = '#555';
     for(var wall in walls){
-        buffer.fillRect(
+        canvas_buffer.fillRect(
           walls[wall]['x'],
           walls[wall]['y'],
           walls[wall]['width'],
@@ -58,43 +58,43 @@ function draw_logic(){
 
     // Draw racers.
     for(var racer in racers){
-        buffer.fillStyle = racers[racer]['color'];
-        buffer.save();
-        buffer.translate(
+        canvas_buffer.fillStyle = racers[racer]['color'];
+        canvas_buffer.save();
+        canvas_buffer.translate(
           racers[racer]['x'],
           racers[racer]['y']
         );
-        buffer.rotate(racers[racer]['angle']);
+        canvas_buffer.rotate(racers[racer]['angle']);
 
-        buffer.fillRect(
+        canvas_buffer.fillRect(
           -15,
           -10,
           30,
           20
         );
 
-        buffer.restore();
+        canvas_buffer.restore();
 /*
-        buffer.strokeStyle = racers[racer]['color'];
-        buffer.beginPath();
-          buffer.moveTo(
+        canvas_buffer.strokeStyle = racers[racer]['color'];
+        canvas_buffer.beginPath();
+          canvas_buffer.moveTo(
             racers[racer]['x'],
             racers[racer]['y']
           );
-          buffer.lineTo(
+          canvas_buffer.lineTo(
             checkpoints[racers[racer]['target']]['x'],
             checkpoints[racers[racer]['target']]['y']
           );
-        buffer.closePath();
-        buffer.stroke();
+        canvas_buffer.closePath();
+        canvas_buffer.stroke();
 */
     }
 
-    buffer.restore();
+    canvas_buffer.restore();
 
     // Draw lap counter.
-    buffer.fillStyle = '#fff';
-    buffer.fillText(
+    canvas_buffer.fillStyle = '#fff';
+    canvas_buffer.fillText(
       racers[0]['lap'],
       0,
       25
@@ -143,8 +143,8 @@ function setmode_logic(newgame){
     racers = {};
 
     // Main menu mode.
-    if(mode === 0){
-        document.body.innerHTML = '<div><div><a onclick="setmode(1, true)">Test Track</a></div></div>'
+    if(canvas_mode === 0){
+        document.body.innerHTML = '<div><div><a onclick="canvas_setmode(1, true)">Test Track</a></div></div>'
           + '<div class=right><div><input disabled value=ESC>Main Menu</div><hr>'
           + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
           + '<input id=color type=color>Color<br>'
@@ -238,7 +238,7 @@ var racers = {};
 var walls = [];
 
 window.onkeydown = function(e){
-    if(mode <= 0){
+    if(canvas_mode <= 0){
         return;
     }
 
@@ -246,7 +246,7 @@ window.onkeydown = function(e){
 
     // ESC: return to main menu.
     if(key === 27){
-        setmode(
+        canvas_setmode(
           0,
           true
         );
@@ -263,5 +263,5 @@ window.onload = function(){
         'ms-per-frame': 25,
       }
     );
-    init_canvas();
+    canvas_init();
 };
