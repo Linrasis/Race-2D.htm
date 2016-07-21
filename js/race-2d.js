@@ -1,9 +1,5 @@
 'use strict';
 
-function distance(x0, y0, x1, y1){
-    return Math.sqrt(Math.pow(x0 - x1, 2) + Math.pow(y0 - y1, 2));
-}
-
 function draw_logic(){
     canvas_buffer.save();
     canvas_buffer.translate(
@@ -103,7 +99,7 @@ function draw_logic(){
 
 function logic(){
     for(var racer in racers){
-        if(distance(
+        if(math_distance(
           racers[racer]['x'],
           racers[racer]['y'],
           checkpoints[racers[racer]['target']]['x'],
