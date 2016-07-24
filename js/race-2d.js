@@ -116,10 +116,10 @@ function logic(){
           checkpoints[racers[racer]['target']]['x'] - racers[racer]['x']
         );
         if(angle < 0){
-            angle += Math.PI * 2;
+            angle += math_tau;
 
-        }else if(angle > Math.PI * 2){
-            angle -= Math.PI * 2;
+        }else if(angle > math_tau){
+            angle -= math_tau;
         }
 
         if(racers[racer]['angle'] > angle){
@@ -227,10 +227,6 @@ function setmode_logic(newgame){
         ];
     }
 }
-
-var checkpoints = {};
-var racers = {};
-var walls = [];
 
 window.onkeydown = function(e){
     if(canvas_mode <= 0){
