@@ -98,6 +98,10 @@ function draw_logic(){
 }
 
 function logic(){
+    if(canvas_menu){
+        return;
+    }
+
     for(var racer in racers){
         if(math_distance(
           racers[racer]['x'],
@@ -141,7 +145,7 @@ function setmode_logic(newgame){
     // Main menu mode.
     if(canvas_mode === 0){
         document.body.innerHTML = '<div><div><a onclick="canvas_setmode(1, true)">Test Track</a></div></div>'
-          + '<div class=right><div><input disabled value=ESC>Main Menu</div><hr>'
+          + '<div class=right><div><input disabled value=ESC>Menu</div><hr>'
           + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
           + '<input id=color type=color>Color<br>'
           + '<input id=ms-per-frame>ms/Frame<br>'
@@ -235,13 +239,16 @@ window.onkeydown = function(e){
 
     var key = e.keyCode || e.which;
 
-    // ESC: return to main menu.
+    // ESC: menu.
     if(key === 27){
-        canvas_setmode(
-          0,
-          true
-        );
+        canvas_menu_toggle();
         return;
+    }
+
+    key = String.fromCharCode(key);
+
+    if(key === 'Q'){
+        canvas_menu_quit();
     }
 };
 
