@@ -20,21 +20,21 @@ function draw_logic(){
     // Draw checkpoints.
     canvas_buffer.fillStyle = '#fff';
     canvas_buffer.strokeStyle = '#999';
-    for(var checkpoint in checkpoints){
+    for(var checkpoint in race_checkpoints){
         canvas_buffer.fillRect(
-          checkpoints[checkpoint]['x'] - 5,
-          checkpoints[checkpoint]['y'] - 5,
+          race_checkpoints[checkpoint]['x'] - 5,
+          race_checkpoints[checkpoint]['y'] - 5,
           10,
           10
         );
         canvas_buffer.beginPath();
           canvas_buffer.moveTo(
-            checkpoints[checkpoint]['x'],
-            checkpoints[checkpoint]['y']
+            race_checkpoints[checkpoint]['x'],
+            race_checkpoints[checkpoint]['y']
           );
           canvas_buffer.lineTo(
-            checkpoints[checkpoints[checkpoint]['next']]['x'],
-            checkpoints[checkpoints[checkpoint]['next']]['y']
+            race_checkpoints[race_checkpoints[checkpoint]['next']]['x'],
+            race_checkpoints[race_checkpoints[checkpoint]['next']]['y']
           );
         canvas_buffer.closePath();
         canvas_buffer.stroke();
@@ -43,24 +43,24 @@ function draw_logic(){
 
     // Draw walls.
     canvas_buffer.fillStyle = '#555';
-    for(var wall in walls){
+    for(var wall in race_walls){
         canvas_buffer.fillRect(
-          walls[wall]['x'],
-          walls[wall]['y'],
-          walls[wall]['width'],
-          walls[wall]['height']
+          race_walls[wall]['x'],
+          race_walls[wall]['y'],
+          race_walls[wall]['width'],
+          race_walls[wall]['height']
         );
     }
 
     // Draw racers.
-    for(var racer in racers){
-        canvas_buffer.fillStyle = racers[racer]['color'];
+    for(var racer in race_racers){
+        canvas_buffer.fillStyle = race_racers[racer]['color'];
         canvas_buffer.save();
         canvas_buffer.translate(
-          racers[racer]['x'],
-          racers[racer]['y']
+          race_racers[racer]['x'],
+          race_racers[racer]['y']
         );
-        canvas_buffer.rotate(racers[racer]['angle']);
+        canvas_buffer.rotate(race_racers[racer]['angle']);
 
         canvas_buffer.fillRect(
           -15,
@@ -71,15 +71,15 @@ function draw_logic(){
 
         canvas_buffer.restore();
 /*
-        canvas_buffer.strokeStyle = racers[racer]['color'];
+        canvas_buffer.strokeStyle = race_racers[racer]['color'];
         canvas_buffer.beginPath();
           canvas_buffer.moveTo(
-            racers[racer]['x'],
-            racers[racer]['y']
+            race_racers[racer]['x'],
+            race_racers[racer]['y']
           );
           canvas_buffer.lineTo(
-            checkpoints[racers[racer]['target']]['x'],
-            checkpoints[racers[racer]['target']]['y']
+            race_checkpoints[race_racers[racer]['target']]['x'],
+            race_checkpoints[race_racers[racer]['target']]['y']
           );
         canvas_buffer.closePath();
         canvas_buffer.stroke();
@@ -91,7 +91,7 @@ function draw_logic(){
     // Draw lap counter.
     canvas_buffer.fillStyle = '#fff';
     canvas_buffer.fillText(
-      racers[0]['lap'],
+      race_racers[0]['lap'],
       0,
       25
     );
@@ -102,22 +102,26 @@ function logic(){
         return;
     }
 
-    for(var racer in racers){
+    for(var racer in race_racers){
+        if(race_racers[racer]['speed'] < race_racers[racer]['speed-max']){
+            race_racers[racer]['speed'] += race_racers[racer]['acceleration'];
+        }
+
         if(math_distance(
-          racers[racer]['x'],
-          racers[racer]['y'],
-          checkpoints[racers[racer]['target']]['x'],
-          checkpoints[racers[racer]['target']]['y']
+          race_racers[racer]['x'],
+          race_racers[racer]['y'],
+          race_checkpoints[race_racers[racer]['target']]['x'],
+          race_checkpoints[race_racers[racer]['target']]['y']
         ) < 50){
-            if(checkpoints[racers[racer]['target']]['lap']){
-                racers[racer]['lap'] += 1;
+            if(race_checkpoints[race_racers[racer]['target']]['lap']){
+                race_racers[racer]['lap'] += 1;
             }
-            racers[racer]['target'] = checkpoints[racers[racer]['target']]['next'];
+            race_racers[racer]['target'] = race_checkpoints[race_racers[racer]['target']]['next'];
         }
 
         var angle = Math.atan2(
-          checkpoints[racers[racer]['target']]['y'] - racers[racer]['y'],
-          checkpoints[racers[racer]['target']]['x'] - racers[racer]['x']
+          race_checkpoints[race_racers[racer]['target']]['y'] - race_racers[racer]['y'],
+          race_checkpoints[race_racers[racer]['target']]['x'] - race_racers[racer]['x']
         );
         if(angle < 0){
             angle += math_tau;
@@ -126,21 +130,21 @@ function logic(){
             angle -= math_tau;
         }
 
-        if(racers[racer]['angle'] > angle){
-          racers[racer]['angle'] -= racers[racer]['turn'];
+        if(race_racers[racer]['angle'] > angle){
+          race_racers[racer]['angle'] -= race_racers[racer]['turn'];
 
-        }else if(racers[racer]['angle'] < angle){
-          racers[racer]['angle'] += racers[racer]['turn'];
+        }else if(race_racers[racer]['angle'] < angle){
+          race_racers[racer]['angle'] += race_racers[racer]['turn'];
         }
 
-        racers[racer]['x'] += Math.cos(racers[racer]['angle']) * racers[racer]['speed'];
-        racers[racer]['y'] += Math.sin(racers[racer]['angle']) * racers[racer]['speed'];
+        race_racers[racer]['x'] += Math.cos(race_racers[racer]['angle']) * race_racers[racer]['speed'];
+        race_racers[racer]['y'] += Math.sin(race_racers[racer]['angle']) * race_racers[racer]['speed'];
     }
 }
 
 function setmode_logic(newgame){
-    checkpoints = {};
-    racers = {};
+    race_checkpoints.length = 0;
+    race_racers.length = 0;
 
     // Main menu mode.
     if(canvas_mode === 0){
@@ -158,7 +162,7 @@ function setmode_logic(newgame){
             settings_save();
         }
 
-        checkpoints = [
+        race_checkpoints = [
           {
             'next': 1,
             'x': 250,
@@ -191,19 +195,11 @@ function setmode_logic(newgame){
             'y': -150,
           },
         ];
-        racers = [
-          {
-            'angle': 0,
-            'color': settings_settings['color'],
-            'lap': 0,
-            'speed': 2,
-            'target': 0,
-            'turn': .04,
-            'x': 0,
-            'y': -150,
-          },
-        ];
-        walls = [
+        race_racer_create({
+          'color': settings_settings['color'],
+          'y': -150,
+        });
+        race_walls = [
           {
             'height': 10,
             'width': 390,
