@@ -1,13 +1,7 @@
 iterami/Race-2D.htm
 -------------------
 
-2D topdown racing game.
-
----
-
-Action              | Key
---------------------|-----
-Return to Main Menu | ESC
+2D topdown racing simulation.
 
 ---
 
