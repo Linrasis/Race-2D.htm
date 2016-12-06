@@ -224,12 +224,16 @@ function setmode_logic(newgame){
           },
         ];
         race_racer_create({
-          'color': settings_settings['color'],
-          'y': -150,
+          'properties': {
+            'color': settings_settings['color'],
+            'y': -150,
+          },
         });
         race_racer_create({
-          'color': '#fff',
-          'y': -150,
+          'properties': {
+            'color': '#fff',
+            'y': -150,
+          },
         });
         race_walls = [
           {
