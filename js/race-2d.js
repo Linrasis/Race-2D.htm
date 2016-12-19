@@ -6,7 +6,11 @@ function draw_logic(){
       canvas_x,
       canvas_y
     );
-    canvas_buffer.rotate(-math_degrees_to_radians(race_racers[0]['angle']) - 1.5708);
+    canvas_buffer.rotate(
+      -math_degrees_to_radians({
+        'degrees': race_racers[0]['angle'],
+      }) - 1.5708
+    );
     canvas_buffer.translate(
       -race_racers[0]['x'],
       -race_racers[0]['y']
@@ -96,19 +100,19 @@ function logic(){
     if(race_racers[0]['speed'] !== 0){
         if(movement === 0){
             if(Math.abs(race_racers[0]['speed']) > .001){
-                race_racers[0]['speed'] = math_round(
-                  race_racers[0]['speed'] * .95
-                );
+                race_racers[0]['speed'] = math_round({
+                  'number': race_racers[0]['speed'] * .95,
+                });
 
             }else{
                 race_racers[0]['speed'] = 0;
             }
         }
 
-        var camera_movement = math_move_3d(
-          race_racers[0]['speed'],
-          race_racers[0]['angle'] - 90
-        );
+        var camera_movement = math_move_3d({
+          'angle': race_racers[0]['angle'] - 90,
+          'speed': race_racers[0]['speed'],
+        });
         race_racers[0]['x'] += camera_movement['x'];
         race_racers[0]['y'] += camera_movement['z'];
 
@@ -134,12 +138,12 @@ function logic(){
             race_racers[racer]['speed'] += race_racers[racer]['acceleration'];
         }
 
-        if(math_distance(
-          race_racers[racer]['x'],
-          race_racers[racer]['y'],
-          race_checkpoints[race_racers[racer]['target']]['x'],
-          race_checkpoints[race_racers[racer]['target']]['y']
-        ) < 50){
+        if(math_distance({
+          'x0': race_racers[racer]['x'],
+          'x1': race_checkpoints[race_racers[racer]['target']]['x'],
+          'y0': race_racers[racer]['y'],
+          'y1': race_checkpoints[race_racers[racer]['target']]['y'],
+        }) < 50){
             if(race_checkpoints[race_racers[racer]['target']]['lap']){
                 race_racers[racer]['lap'] += 1;
             }
