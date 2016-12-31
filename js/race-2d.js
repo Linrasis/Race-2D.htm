@@ -269,14 +269,14 @@ function setmode_logic(newgame){
 }
 
 window.onload = function(){
-    settings_init(
-      'Race-2D.htm-',
-      {
+    settings_init({
+      'prefix': 'Race-2D.htm-',
+      'settings': {
         'audio-volume': 1,
         'color': '#009900',
         'ms-per-frame': 25,
-      }
-    );
+      },
+    });
     input_init(
       {
         27: {
