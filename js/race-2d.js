@@ -179,7 +179,7 @@ function setmode_logic(newgame){
 
     // Main menu mode.
     if(canvas_mode === 0){
-        document.body.innerHTML = '<div><div><a onclick="canvas_setmode(1, true)">Test Track</a></div></div>'
+        document.body.innerHTML = '<div><div><a onclick=canvas_setmode({mode:1,newgame:true})>Test Track</a></div></div>'
           + '<div class=right><div><input disabled value=WASD>Drive<br>'
           + '<input disabled value=ESC>Menu</div><hr>'
           + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
