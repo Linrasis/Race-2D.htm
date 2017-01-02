@@ -277,8 +277,8 @@ window.onload = function(){
         'ms-per-frame': 25,
       },
     });
-    input_init(
-      {
+    input_init({
+      'keybinds': {
         27: {
           'todo': canvas_menu_toggle,
         },
@@ -289,7 +289,7 @@ window.onload = function(){
         },
         83: {},
         87: {},
-      }
-    );
+      },
+    });
     canvas_init();
 };
