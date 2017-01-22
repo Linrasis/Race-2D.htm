@@ -185,13 +185,13 @@ function setmode_logic(newgame){
           + '<div><input id=audio-volume max=1 min=0 step=0.01 type=range>Audio<br>'
           + '<input id=color type=color>Color<br>'
           + '<input id=ms-per-frame>ms/Frame<br>'
-          + '<a onclick=settings_reset()>Reset Settings</a></div></div>';
-        settings_update();
+          + '<a onclick=storage_reset()>Reset Settings</a></div></div>';
+        storage_update();
 
     // New game mode.
     }else{
         if(newgame){
-            settings_save();
+            storage_save();
         }
 
         race_checkpoints = [
@@ -229,7 +229,7 @@ function setmode_logic(newgame){
         ];
         race_racer_create({
           'properties': {
-            'color': settings_settings['color'],
+            'color': storage_data['color'],
             'y': -150,
           },
         });
@@ -269,14 +269,6 @@ function setmode_logic(newgame){
 }
 
 window.onload = function(){
-    settings_init({
-      'prefix': 'Race-2D.htm-',
-      'settings': {
-        'audio-volume': 1,
-        'color': '#009900',
-        'ms-per-frame': 25,
-      },
-    });
     input_init({
       'keybinds': {
         27: {
@@ -290,6 +282,14 @@ window.onload = function(){
         83: {},
         87: {},
       },
+    });
+    storage_init({
+      'data': {
+        'audio-volume': 1,
+        'color': '#009900',
+        'ms-per-frame': 25,
+      },
+      'prefix': 'Race-2D.htm-',
     });
     canvas_init();
 };
