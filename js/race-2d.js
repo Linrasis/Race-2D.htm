@@ -6,14 +6,10 @@ function draw_logic(){
       canvas_x,
       canvas_y
     );
-    canvas_buffer.rotate(
-      -math_degrees_to_radians({
-        'degrees': race_racers[0]['angle'],
-      }) - 1.5708
-    );
+    canvas_buffer.rotate(-entity_entities['player']['angle'] - 1.5708);
     canvas_buffer.translate(
-      -race_racers[0]['x'],
-      -race_racers[0]['y']
+      -entity_entities['player']['x'],
+      -entity_entities['player']['y']
     );
 
     // Draw background.
@@ -25,6 +21,7 @@ function draw_logic(){
       400
     );
 
+    /*
     // Draw walls.
     canvas_buffer.fillStyle = '#555';
     for(var wall in race_walls){
@@ -35,20 +32,17 @@ function draw_logic(){
           race_walls[wall]['height']
         );
     }
+    */
 
     // Draw racers.
-    for(var racer in race_racers){
-        if(racer === '0'){
-            continue;
-        }
-
-        canvas_buffer.fillStyle = race_racers[racer]['color'];
+    for(var racer in entity_entities){
+        canvas_buffer.fillStyle = entity_entities[racer]['color'];
         canvas_buffer.save();
         canvas_buffer.translate(
-          race_racers[racer]['x'],
-          race_racers[racer]['y']
+          entity_entities[racer]['x'],
+          entity_entities[racer]['y']
         );
-        canvas_buffer.rotate(race_racers[racer]['angle']);
+        canvas_buffer.rotate(entity_entities[racer]['angle']);
 
         canvas_buffer.fillRect(
           -15,
@@ -62,19 +56,10 @@ function draw_logic(){
 
     canvas_buffer.restore();
 
-    // Draw player.
-    canvas_buffer.fillStyle = race_racers[0]['color'];
-    canvas_buffer.fillRect(
-      canvas_x - 10,
-      canvas_y - 15,
-      20,
-      30
-    );
-
     // Draw lap counter.
     canvas_buffer.fillStyle = '#fff';
     canvas_buffer.fillText(
-      race_racers[0]['lap'],
+      entity_entities['player']['lap'],
       0,
       25
     );
@@ -88,71 +73,73 @@ function logic(){
     // Move the player.
     var movement = 0;
     if(input_keys[83]['state']
-      && race_racers[0]['speed'] > -race_racers[0]['speed-max'] / 2){
-        movement = -race_racers[0]['acceleration'];
+      && entity_entities['player']['speed'] > -entity_entities['player']['speed-max'] / 2){
+        movement = -entity_entities['player']['acceleration'];
     }
     if(input_keys[87]['state']
-      && race_racers[0]['speed'] < race_racers[0]['speed-max']){
-        movement = race_racers[0]['acceleration'];
+      && entity_entities['player']['speed'] < entity_entities['player']['speed-max']){
+        movement = entity_entities['player']['acceleration'];
     }
-    race_racers[0]['speed'] = race_racers[0]['speed'] + movement;
+    entity_entities['player']['speed'] = entity_entities['player']['speed'] + movement;
 
-    if(race_racers[0]['speed'] !== 0){
+    if(entity_entities['player']['speed'] !== 0){
         if(movement === 0){
-            if(Math.abs(race_racers[0]['speed']) > .001){
-                race_racers[0]['speed'] = math_round({
-                  'number': race_racers[0]['speed'] * .95,
+            if(Math.abs(entity_entities['player']['speed']) > .001){
+                entity_entities['player']['speed'] = math_round({
+                  'number': entity_entities['player']['speed'] * .95,
                 });
 
             }else{
-                race_racers[0]['speed'] = 0;
+                entity_entities['player']['speed'] = 0;
             }
         }
-
-        var camera_movement = math_move_3d({
-          'angle': race_racers[0]['angle'] - 90,
-          'speed': race_racers[0]['speed'],
-        });
-        race_racers[0]['x'] += camera_movement['x'];
-        race_racers[0]['y'] += camera_movement['z'];
 
         var rotation = false;
         if(input_keys[65]['state']){
-            rotation = 1 / (1 / race_racers[0]['speed']);
+            rotation = 1 / (1 / entity_entities['player']['speed']) * entity_entities['player']['turn'];
         }
         if(input_keys[68]['state']){
-            rotation = -1 / (1 / race_racers[0]['speed']);
+            rotation = 1 / (1 / entity_entities['player']['speed']) * -entity_entities['player']['turn'];
         }
         if(rotation !== false){
-            race_racers[0]['angle'] -= rotation;
+            entity_entities['player']['angle'] -= rotation;
         }
+
+        var camera_movement = math_move_3d({
+          'angle': math_radians_to_degrees({
+            'radians': entity_entities['player']['angle'],
+          }) - 90,
+          'speed': entity_entities['player']['speed'],
+        });
+        entity_entities['player']['x'] += camera_movement['x'];
+        entity_entities['player']['y'] += camera_movement['z'];
     }
 
-    // Move all other racers.
-    for(var racer in race_racers){
-        if(racer === '0'){
+    // Move ai.
+    for(var racer in entity_entities){
+        if(!entity_entities[racer]['ai']){
             continue;
         }
 
-        if(race_racers[racer]['speed'] < race_racers[racer]['speed-max']){
-            race_racers[racer]['speed'] += race_racers[racer]['acceleration'];
+        if(entity_entities[racer]['speed'] < entity_entities[racer]['speed-max']){
+            entity_entities[racer]['speed'] += entity_entities[racer]['acceleration'];
         }
 
         if(math_distance({
-          'x0': race_racers[racer]['x'],
-          'x1': race_checkpoints[race_racers[racer]['target']]['x'],
-          'y0': race_racers[racer]['y'],
-          'y1': race_checkpoints[race_racers[racer]['target']]['y'],
+          'x0': entity_entities[racer]['x'],
+          'x1': race_checkpoints[entity_entities[racer]['target']]['x'],
+          'y0': entity_entities[racer]['y'],
+          'y1': race_checkpoints[entity_entities[racer]['target']]['y'],
         }) < 50){
-            if(race_checkpoints[race_racers[racer]['target']]['lap']){
-                race_racers[racer]['lap'] += 1;
+            if(race_checkpoints[entity_entities[racer]['target']]['lap']){
+                entity_entities[racer]['lap'] += 1;
             }
-            race_racers[racer]['target'] = race_checkpoints[race_racers[racer]['target']]['next'];
+            entity_entities[racer]['target'] = race_checkpoints[entity_entities[racer]['target']]['next'];
         }
 
         var angle = Math.atan2(
-          race_checkpoints[race_racers[racer]['target']]['y'] - race_racers[racer]['y'],
-          race_checkpoints[race_racers[racer]['target']]['x'] - race_racers[racer]['x']
+          race_checkpoints[entity_entities[racer]['target']]['y'] - entity_entities[racer]['y'],
+          race_checkpoints[entity_entities[racer]['target']]['x'] - entity_entities[racer]['x']
         );
         if(angle < 0){
             angle += math_tau;
@@ -161,21 +148,21 @@ function logic(){
             angle -= math_tau;
         }
 
-        if(race_racers[racer]['angle'] > angle){
-          race_racers[racer]['angle'] -= race_racers[racer]['turn'];
+        if(entity_entities[racer]['angle'] > angle){
+          entity_entities[racer]['angle'] -= entity_entities[racer]['turn'];
 
-        }else if(race_racers[racer]['angle'] < angle){
-          race_racers[racer]['angle'] += race_racers[racer]['turn'];
+        }else if(entity_entities[racer]['angle'] < angle){
+          entity_entities[racer]['angle'] += entity_entities[racer]['turn'];
         }
 
-        race_racers[racer]['x'] += Math.cos(race_racers[racer]['angle']) * race_racers[racer]['speed'];
-        race_racers[racer]['y'] += Math.sin(race_racers[racer]['angle']) * race_racers[racer]['speed'];
+        entity_entities[racer]['x'] += Math.cos(entity_entities[racer]['angle']) * entity_entities[racer]['speed'];
+        entity_entities[racer]['y'] += Math.sin(entity_entities[racer]['angle']) * entity_entities[racer]['speed'];
     }
 }
 
 function setmode_logic(newgame){
     race_checkpoints.length = 0;
-    race_racers.length = 0;
+    entity_entities.length = 0;
 
     // Main menu mode.
     if(canvas_mode === 0){
@@ -228,17 +215,21 @@ function setmode_logic(newgame){
           },
         ];
         race_racer_create({
+          'id': 'player',
           'properties': {
+            'ai': false,
             'color': storage_data['color'],
             'y': -150,
           },
         });
         race_racer_create({
+          'id': 'ai',
           'properties': {
             'color': '#fff',
             'y': -150,
           },
         });
+        /*
         race_walls = [
           {
             'height': 10,
@@ -265,10 +256,14 @@ function setmode_logic(newgame){
             'y': -125,
           },
         ];
+        */
     }
 }
 
 window.onload = function(){
+    entity_types_default = [
+      '_racer',
+    ];
     input_init({
       'keybinds': {
         27: {
@@ -292,4 +287,5 @@ window.onload = function(){
       'prefix': 'Race-2D.htm-',
     });
     canvas_init();
+    race_init();
 };
